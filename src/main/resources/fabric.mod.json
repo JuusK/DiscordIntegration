@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "webhookintegration",
+  "version": "${version}",
+  "name": "WebhookIntegration",
+  "description": "Small mod to use a discord webhook to notify about ingame events for afk'ing",
+  "authors": [
+    "JuusK"
+  ],
+  "contact": {},
+  "license": "GNU Lesser General Public License v2.1",
+  "icon": "assets/webhookintegration/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "me.juusk.webhookintegration.WebhookIntegrationClient"
+    ],
+    "modmenu": [
+      "me.juusk.webhookintegration.config.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "webhookintegration.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric": "*",
+    "minecraft": "1.20.6",
+    "yet_another_config_lib_v3": ">=3.5.0+1.20.6-fabric"
+  }
+}
