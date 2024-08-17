@@ -1,6 +1,7 @@
 
 
-[![MIT License](https://img.shields.io/badge/License-LGPL%20v2.1-yellow.svg)](https://choosealicense.com/licenses/mit/)[![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)](#)
+[![MIT License](https://img.shields.io/badge/License-LGPL%20v2.1-yellow.svg)](https://choosealicense.com/licenses/mit/)
+[![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)](#)
 
 
 # Discord Integration
