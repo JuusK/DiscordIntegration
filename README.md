@@ -1,6 +1,6 @@
 
 
-[![MIT License](https://img.shields.io/badge/License-LGPL%20v2.1-yellow.svg)](https://choosealicense.com/licenses/mit/)
+[![MIT License](https://img.shields.io/badge/License-LGPL%20v2.1-yellow.svg)](https://choosealicense.com/licenses/mit/)[![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)](#)
 
 
 # Discord Integration
@@ -26,4 +26,3 @@ Notifies you on a discord webhook if you died.
 ## Screenshots
 
 ![App Screenshot](https://cdn.modrinth.com/data/WmnxSYyv/images/35560f9b77b2630995886da67b19d06d0337a59d.png)
-
