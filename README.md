@@ -1,8 +1,8 @@
 
 
 [![MIT License](https://img.shields.io/badge/License-LGPL%20v2.1-yellow.svg)](https://github.com/JuusK/DiscordIntegration/blob/master/LICENSE)
-[![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)](#)
-[![FabricMC](https://img.shields.io/badge/FabricMC-%23FFFADE.svg)](#)
+[![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)](https://www.java.com/)
+[![FabricMC](https://img.shields.io/badge/FabricMC-%23FFFADE.svg)](https://fabricmc.net/)
 
 
 # Discord Integration
