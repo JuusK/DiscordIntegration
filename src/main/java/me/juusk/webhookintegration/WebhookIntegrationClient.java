@@ -1,5 +1,6 @@
 package me.juusk.webhookintegration;
 
+import me.juusk.webhookintegration.util.Config;
 import me.juusk.webhookintegration.util.DiscordWebhook;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -14,18 +15,6 @@ import java.text.DecimalFormat;
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class WebhookIntegrationClient implements ClientModInitializer {
 
-
-    public static Color embedColor = Color.RED;
-
-    private static String webhookUrl = "";
-    public static String messageTitle = "You died, {name}";
-    public static String userId = "";
-
-    public static boolean messageCoordinates = true;
-    public static boolean messageWorldName = true;
-    public static boolean enabled = true;
-    public static boolean mention = false;
-
     public static DiscordWebhook webhook;
     public  static WebhookIntegrationClient INSTANCE = new WebhookIntegrationClient();
 
@@ -33,32 +22,10 @@ public class WebhookIntegrationClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-
+        Config.HANDLER.load();
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
         });
     }
-
-    /*public Screen createConfig(Screen parentScreen) {
-        YetAnotherConfigLib.createBuilder()
-                .title(Text.literal("WebhookIntegration"))
-                .category(ConfigCategory.createBuilder()
-                        .name(Text.literal("General"))
-                        .tooltip(Text.literal("General options"))
-                        .group(OptionGroup.createBuilder()
-                                .name(Text.literal("Name of the group"))
-                                .description(OptionDescription.of(Text.literal("This text will appear when you hover over the name or focus on the collapse button with Tab.")))
-                                .option(Option.<Boolean>createBuilder()
-                                        .name(Text.literal("Enabled"))
-                                        .description(OptionDescription.of(Text.literal("This text will appear as a tooltip when you hover over the option.")))
-                                        .binding(true, () -> this.enabled, newVal -> this.enabled = newVal)
-                                        .controller(TickBoxControllerBuilder::create)
-                                        .build())
-                                .build())
-                        .build())
-                .build().generateScreen(parentScreen);
-        return parentScreen;
-    }*/
-
 
     public void onOpenScreen(Screen screen) {
         assert MinecraftClient.getInstance().player != null;
@@ -70,27 +37,122 @@ public class WebhookIntegrationClient implements ClientModInitializer {
     }
 
 
-    public static void setWebhookUrl(String url) {
-        webhookUrl = url;
-        onWebhookUrlChanged();
+    public static void setWebhookURL(String url) {
+        Config.webhookUrl = url;
+        onWebhookURLChanged();
     }
-    public static String getWebhookUrl() {
-        return webhookUrl;
+    public static String getWebhookURL() {
+        return Config.webhookUrl;
     }
 
-    private static void onWebhookUrlChanged() {
-        if(!webhookUrl.isEmpty()) {
-            webhook = new DiscordWebhook(webhookUrl);
+    private static void onWebhookURLChanged() {
+        if(!Config.webhookUrl.isEmpty()) {
+            webhook = new DiscordWebhook(Config.webhookUrl);
         }
     }
+
+    public static void setEnabled(Boolean enabled) {
+        Config.enabled = enabled;
+        onEnabledChanged();
+    }
+
+    public static Boolean getEnabled() {
+        return Config.enabled;
+    }
+
+    private static void onEnabledChanged() {
+        Config.HANDLER.save();
+    }
+
+    public static void setEmbedColor(Color embedColor) {
+        Config.embedColor = embedColor;
+        onEmbedColorChanged();
+    }
+
+    public static Color getEmbedColor() {
+        return Config.embedColor;
+    }
+
+    private static void onEmbedColorChanged() {
+        Config.HANDLER.save();
+    }
+
+
+    public static void setMessageTitle(String messageTitle) {
+        Config.messageTitle = messageTitle;
+        onMessageTitleChanged();
+    }
+
+    public static String getMessageTitle() {
+        return Config.messageTitle;
+    }
+
+    private static void onMessageTitleChanged() {
+        Config.HANDLER.save();
+    }
+
+    public static void setUserID(String userId) {
+        Config.userId = userId;
+        onUserIDChanged();
+    }
+
+    public static String getUserID() {
+        return Config.userId;
+    }
+
+    private static void onUserIDChanged() {
+        Config.HANDLER.save();
+    }
+
+    public static void setMessageCoordinates(Boolean messageCoordinates) {
+        Config.messageCoordinates = messageCoordinates;
+        onMessageCoordinatesChanged();
+    }
+
+    public static Boolean getMessageCoordinates() {
+        return Config.messageCoordinates;
+    }
+
+    private static void onMessageCoordinatesChanged() {
+        Config.HANDLER.save();
+    }
+
+    public static void setMessageWorldName(Boolean messageWorldName) {
+        Config.messageWorldName = messageWorldName;
+        onMessageWorldNameChanged();
+    }
+
+    public static Boolean getMessageWorldName() {
+        return Config.messageWorldName;
+    }
+
+    private static void onMessageWorldNameChanged() {
+        Config.HANDLER.save();
+    }
+
+    public static void setMention(Boolean mention) {
+        Config.mention = mention;
+        onMentionChanged();
+    }
+
+    public static Boolean getMention() {
+        return Config.mention;
+    }
+
+    private static void onMentionChanged() {
+        Config.HANDLER.save();
+    }
+
+
+
     public static void sendDeathMessage() {
         assert MinecraftClient.getInstance().player != null;
         if (webhook == null) return;
 
-        if(mention == true) {
-            webhook.setContent("<@" + userId + ">");
+        if(Config.mention == true) {
+            webhook.setContent("<@" + Config.userId + ">");
         }
-        String title = messageTitle;
+        String title = Config.messageTitle;
         if(title.contains("{name}")) {
             title = title.replace("{name}", MinecraftClient.getInstance().player.getName().getString());
             System.out.println("Replaced {name} with playername");
@@ -100,12 +162,12 @@ public class WebhookIntegrationClient implements ClientModInitializer {
 
         DiscordWebhook.EmbedObject embedObject = new DiscordWebhook.EmbedObject();
         embedObject.setTitle(title);
-        embedObject.setColor(embedColor);
+        embedObject.setColor(Config.embedColor);
         DecimalFormat df = new DecimalFormat("###.###");
-        if(messageCoordinates) {
+        if(Config.messageCoordinates) {
             embedObject.addField("Coordinates:", "X: " + df.format(MinecraftClient.getInstance().player.getX()) + " Y: " + df.format(MinecraftClient.getInstance().player.getY()) + " Z: " + df.format(MinecraftClient.getInstance().player.getZ()), false);
         }
-        if(messageWorldName) {
+        if(Config.messageWorldName) {
             embedObject.addField("World:", MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath(), false);
         }
 

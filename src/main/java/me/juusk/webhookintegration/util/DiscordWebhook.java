@@ -60,6 +60,7 @@ public class DiscordWebhook {
             throw new IllegalArgumentException("Set content or add at least one EmbedObject");
         }
 
+
         JSONObject json = new JSONObject();
 
         json.put("content", this.content);
