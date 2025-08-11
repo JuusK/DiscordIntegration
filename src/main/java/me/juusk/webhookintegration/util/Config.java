@@ -23,6 +23,18 @@ public class Config {
 
 
     @SerialEntry
+    public static boolean deathEnabled = true;
+
+    @SerialEntry
+    public static boolean deathEmbed = true;
+
+    @SerialEntry
+    public static boolean chatEnabled = false;
+
+    @SerialEntry
+    public static boolean chatEmbed = true;
+
+    @SerialEntry
     public static Color embedColor = Color.RED;
 
     @SerialEntry
