@@ -13,7 +13,7 @@ import java.awt.*;
 public class Config {
 
     public static ConfigClassHandler<Config> HANDLER = ConfigClassHandler.createBuilder(Config.class)
-            .id(new Identifier("discordwebhook", "config"))
+            .id(Identifier.of("discordwebhook", "config"))
                     .serializer(config -> GsonConfigSerializerBuilder.create(config)
                             .setPath(FabricLoader.getInstance().getConfigDir().resolve("settings.json"))
                             .appendGsonBuilder(GsonBuilder::setPrettyPrinting)
