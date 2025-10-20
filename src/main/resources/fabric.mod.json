@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "webhookintegration",
   "version": "${version}",
-  "name": "WebhookIntegration",
+  "name": "Discord Integration",
   "description": "Small mod to use a discord webhook to notify about ingame events for afk'ing",
   "authors": [
     "JuusK"
@@ -25,7 +25,7 @@
   "depends": {
     "fabricloader": ">=0.16.0",
     "fabric": "*",
-    "minecraft": "1.21",
-    "yet_another_config_lib_v3": ">=3.6.1+1.21-fabric"
+    "minecraft": "1.21.2",
+    "yet_another_config_lib_v3": ">=3.8.0+1.21.3-fabric"
   }
 }
