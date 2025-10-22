@@ -1,5 +1,6 @@
 package me.juusk.webhookintegration;
 
+import com.mojang.authlib.GameProfile;
 import me.juusk.webhookintegration.util.Config;
 import me.juusk.webhookintegration.util.DiscordWebhook;
 import net.fabricmc.api.ClientModInitializer;
@@ -7,6 +8,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.DeathScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.network.message.MessageType;
+import net.minecraft.network.message.SignedMessage;
 
 import java.awt.*;
 import java.io.IOException;
@@ -36,6 +39,44 @@ public class WebhookIntegrationClient implements ClientModInitializer {
         }
     }
 
+    public static void onChatMessage(SignedMessage message, GameProfile sender, MessageType.Parameters params) {
+        assert MinecraftClient.getInstance().player != null;
+        if(webhook == null) return;
+
+
+        String title = sender.getName();
+        String messageContent = "";
+
+
+        if(Config.chatEnabled == false) return;
+
+
+
+
+
+
+        if(Config.chatEmbed == true) {
+            DiscordWebhook.EmbedObject embedObject = new DiscordWebhook.EmbedObject();
+            embedObject.setTitle(title);
+            embedObject.addField("Message:", message.getContent().getString(), false);
+
+            webhook.addEmbed(embedObject);
+        } else {
+
+            messageContent = messageContent + ("\n #" + title);
+            messageContent = messageContent + ("\n " + message.getContent());
+        }
+        webhook.setContent(messageContent);
+        try {
+            webhook.execute();
+        } catch(IOException exc) {
+            exc.printStackTrace();
+        }
+        webhook.clearEmbeds();
+
+
+    }
+
 
     public static void setWebhookURL(String url) {
         Config.webhookUrl = url;
@@ -56,8 +97,43 @@ public class WebhookIntegrationClient implements ClientModInitializer {
         onEnabledChanged();
     }
 
+    public static void setDeathEnabled(Boolean enabled) {
+        Config.deathEnabled = enabled;
+        onEnabledChanged();
+    }
+    public static void setDeathEmbed(Boolean enabled) {
+        Config.deathEmbed = enabled;
+        onEnabledChanged();
+    }
+
+    public static void setChatEnabled(Boolean enabled) {
+        Config.chatEnabled = enabled;
+        onEnabledChanged();
+    }
+
+    public static void setChatEmbed(Boolean enabled) {
+        Config.chatEmbed = enabled;
+        onEnabledChanged();
+    }
+
     public static Boolean getEnabled() {
         return Config.enabled;
+    }
+
+    public static Boolean getDeathEnabled() {
+        return Config.deathEnabled;
+    }
+
+    public static Boolean getDeathEmbed() {
+        return Config.deathEmbed;
+    }
+
+    public static Boolean getChatEnabled() {
+        return Config.chatEnabled;
+    }
+
+    public static Boolean getChatEmbed() {
+        return Config.chatEmbed;
     }
 
     private static void onEnabledChanged() {
@@ -147,33 +223,54 @@ public class WebhookIntegrationClient implements ClientModInitializer {
 
     public static void sendDeathMessage() {
         assert MinecraftClient.getInstance().player != null;
-        if (webhook == null) return;
+        if(webhook == null) return;
+
+
+        String title = Config.messageTitle;
+        String messageContent = "";
+
+
+        if(Config.deathEnabled == false) return;
 
         if(Config.mention == true) {
-            webhook.setContent("<@" + Config.userId + ">");
+            messageContent = messageContent + ("<@" + Config.userId + ">");
         }
-        String title = Config.messageTitle;
+
+
+
+
         if(title.contains("{name}")) {
             title = title.replace("{name}", MinecraftClient.getInstance().player.getName().getString());
             System.out.println("Replaced {name} with playername");
         }
 
 
+        if(Config.deathEmbed == true) {
+            DiscordWebhook.EmbedObject embedObject = new DiscordWebhook.EmbedObject();
+            embedObject.setTitle(title);
+            embedObject.setColor(Config.embedColor);
+            DecimalFormat df = new DecimalFormat("###.###");
+            if (Config.messageCoordinates) {
+                embedObject.addField("Coordinates:", "X: " + df.format(MinecraftClient.getInstance().player.getX()) + " Y: " + df.format(MinecraftClient.getInstance().player.getY()) + " Z: " + df.format(MinecraftClient.getInstance().player.getZ()), false);
+            }
+            if (Config.messageWorldName) {
+                embedObject.addField("World:", MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath(), false);
+            }
 
-        DiscordWebhook.EmbedObject embedObject = new DiscordWebhook.EmbedObject();
-        embedObject.setTitle(title);
-        embedObject.setColor(Config.embedColor);
-        DecimalFormat df = new DecimalFormat("###.###");
-        if(Config.messageCoordinates) {
-            embedObject.addField("Coordinates:", "X: " + df.format(MinecraftClient.getInstance().player.getX()) + " Y: " + df.format(MinecraftClient.getInstance().player.getY()) + " Z: " + df.format(MinecraftClient.getInstance().player.getZ()), false);
+
+            webhook.addEmbed(embedObject);
+        } else {
+
+            messageContent = messageContent + ("\n #" + title);
+            DecimalFormat df = new DecimalFormat("###.###");
+            if (Config.messageCoordinates) {
+                messageContent = messageContent + ("\n *Coordinates*" + "\n X: " + df.format(MinecraftClient.getInstance().player.getX()) + "\n Y: " + df.format(MinecraftClient.getInstance().player.getY()) + "\n Z: " + df.format(MinecraftClient.getInstance().player.getZ()));
+            }
+            if (Config.messageWorldName) {
+                messageContent = messageContent + ("\n *World* \n" + MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath());
+            }
         }
-        if(Config.messageWorldName) {
-            embedObject.addField("World:", MinecraftClient.getInstance().world.getRegistryKey().getValue().getPath(), false);
-        }
-
-
-        webhook.addEmbed(embedObject);
-
+        webhook.setContent(messageContent);
         try {
             webhook.execute();
         } catch(IOException exc) {
